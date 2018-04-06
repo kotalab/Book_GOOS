@@ -12,16 +12,17 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
-import org.junit.experimental.categories.Categories;
 
 public class Main {
+	@SuppressWarnings("unused")
+	private Chat notToBeGCD;
+
 	private static final int ARG_HOSTNAME = 0;
 	private static final int ARG_USERNAME = 1;
 	private static final int ARG_PASSWORD = 2;
 	private static final int ARG_ITEM_ID = 3;
 	private MainWindow ui;
 	
-	public static final String MAIN_WINDOW_NAME = "Action Sniper Main";
 	public static final String SNIPER_STATUS_NAME = "sniper status";
 	public static final String AUCTION_RESOURCE = "Auction";
 	public static final String ITEM_ID_AS_LOGIN = "auction-%s";
@@ -33,19 +34,28 @@ public class Main {
 	
 	public static void main(String... args) throws Exception {
 		Main main = new Main();
-		XMPPConnection connection = connectTo(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]);
-		
-		Chat chat = connection.getChatManager().createChat(auctionId(args[ARG_ITEM_ID], connection), new MessageListener() {
-			
-			@Override
-			public void processMessage(Chat aChat, Message message) {
-				// TODO Auto-generated method stub
-			}
-		});
+		main.joinAuction(connection(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]), args[ARG_ITEM_ID]);
+	}
+	
+	private void joinAuction(XMPPConnection connection, String itemId) throws XMPPException {
+		final Chat chat = connection.getChatManager().createChat(
+				auctionId(itemId, connection),
+				new MessageListener() {
+					@Override
+					public void processMessage(Chat aChat, Message message) {
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								ui.showStatus(MainWindow.STATUS_LOST);
+							}
+						});
+						}
+					});
+		this.notToBeGCD = chat;
 		chat.sendMessage(new Message());
 	}
 	
-	private static XMPPConnection connectTo(String hostname, String username, String password) throws XMPPException {
+	private static XMPPConnection connection(String hostname, String username, String password) throws XMPPException {
 		XMPPConnection connection = new XMPPConnection(hostname);
 		connection.connect();
 		connection.login(username, password, AUCTION_RESOURCE);
@@ -58,31 +68,11 @@ public class Main {
 	}
 	
 	private void startUserInterface() throws Exception {
-		SwingUtilities.invokeAndWait(new Runnable() {			
+		SwingUtilities.invokeAndWait(new Runnable() {
+			@Override
 			public void run() {
 				ui = new MainWindow();
 			}
 		});
-	}
-	
-	public class MainWindow extends JFrame {
-		public static final String SNIPER_STATUS_NAME = "sniper status";
-		public static final String STATUS_JOINING = "Joining";
-		private final JLabel snipetStatis = createLabel(STATUS_JOINING);
-		
-		public MainWindow() {
-			super("Auction Sniper");
-			setName(MAIN_WINDOW_NAME);
-			add(snipetStatis);
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			setVisible(true);
-		}
-		
-		private JLabel createLabel(String initialText) {
-			JLabel result = new JLabel(initialText);
-			result.setName(SNIPER_STATUS_NAME);
-			result.setBorder(new LineBorder(Color.BLACK));
-			return result;
-		}
 	}
 }

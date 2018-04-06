@@ -55,6 +55,7 @@ public class FakeAuctionServer {
 	public class SingleMessageListener implements MessageListener {
 		private final ArrayBlockingQueue<Message> messages = new ArrayBlockingQueue<Message>(1);
 
+		@Override
 		public void processMessage(Chat chat, Message message) {
 			messages.add(message);
 		}
