@@ -1,4 +1,4 @@
-import auctionsniper.ui.Main;
+package auctionsniper;
 import auctionsniper.ui.MainWindow;
 
 public class ApplicationRunner {

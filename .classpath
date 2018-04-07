@@ -9,5 +9,8 @@
 	<classpathentry kind="lib" path="lib/smackx.jar"/>
 	<classpathentry kind="lib" path="lib/windowlicker-core-DEV.jar"/>
 	<classpathentry kind="lib" path="lib/windowlicker-swing-DEV.jar"/>
+	<classpathentry kind="lib" path="lib/jmock-2.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/jmock-junit4-2.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/jmock-legacy-2.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
