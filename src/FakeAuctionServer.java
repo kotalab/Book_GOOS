@@ -1,5 +1,4 @@
 import static org.junit.Assert.assertThat;
-
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -10,14 +9,18 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
+import auctionsniper.ui.Main;
+
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 
 public class FakeAuctionServer {
 	private final SingleMessageListener messageListener = new SingleMessageListener();
 
 	public static final String ITEM_ID_AS_LOGIN = "auction-%s";
 	public static final String AUCTION_RESOURCE = "Auction";
-	public static final String XMPP_HOSTNAME = "localhost";
+	public static final String XMPP_HOSTNAME = "192.168.11.2";
 	private static final String AUCTION_PASSWORD = "auction";
 
 	private final String itemId;
@@ -40,8 +43,27 @@ public class FakeAuctionServer {
 		});
 	}
 
-	public void hasReceivedJoinRequestFromSniper() throws InterruptedException {
-		messageListener.receivesAMessage();
+	public void reportPrice(int price, int increment, String bidder) throws XMPPException {
+		currentChat.sendMessage(
+				String.format("SQLVersion: 1.1; Event: PRICE; CurrentPrice: %d; " + "Increment: %d; Bidder: %s;",
+						price,
+						increment,
+						bidder
+						)
+				);
+	}
+
+	public void hasReceivedJoinRequestFrom(String sniperId) throws InterruptedException {
+		receivesAMessageMatching(sniperId, Matchers.equalTo(Main.JOIN_COMMAND_FORMAT));
+	}
+	
+	public void hasReceivedBid(int bid, String sniperId) throws InterruptedException {
+		receivesAMessageMatching(sniperId, Matchers.equalTo(String.format(Main.BID_COMMAND_FORMAT, bid)));
+	}
+	
+	private void receivesAMessageMatching(String sniperId, Matcher<? super String> messageMatcher) throws InterruptedException {
+		messageListener.receivesAMessage(messageMatcher);
+		assertThat(currentChat.getParticipant(), Matchers.equalTo(sniperId));
 	}
 
 	public void announceClosed() throws XMPPException {
@@ -60,12 +82,17 @@ public class FakeAuctionServer {
 			messages.add(message);
 		}
 
-		public void receivesAMessage() throws InterruptedException {
-			assertThat("Message", messages.poll(5, TimeUnit.SECONDS), CoreMatchers.is(CoreMatchers.notNullValue()));
+		@SuppressWarnings("unchecked")
+		public void receivesAMessage(Matcher<? super String> messageMatcher) throws InterruptedException {
+			final Message message = messages.poll(5, TimeUnit.SECONDS);
+			assertThat("Message", message, CoreMatchers.is(CoreMatchers.notNullValue()));
+			assertThat(message.getBody(), messageMatcher);
 		}
+		
 	}
 
 	public String getItemId() {
 		return itemId;
 	}
+	
 }
