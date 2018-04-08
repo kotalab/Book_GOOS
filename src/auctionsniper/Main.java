@@ -7,6 +7,8 @@ import javax.swing.SwingUtilities;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.junit.internal.ArrayComparisonFailure;
+
 import auctionsniper.ui.MainWindow;
 
 public class Main implements SniperListener {
@@ -36,10 +38,13 @@ public class Main implements SniperListener {
 	}
 	
 	private void joinAuction(XMPPConnection connection, String itemId) throws XMPPException {
+		Auction nullAuction = new Auction() {
+			public void bid(int amount) {}
+		};
 		disconnectWhenUICloses(connection);
 		final Chat chat = connection.getChatManager().createChat(
 				auctionId(itemId, connection),
-				new AuctionMessageTranslator(new AuctionSniper(this)));
+				new AuctionMessageTranslator(new AuctionSniper(nullAuction, this)));
 		this.notToBeGCD = chat;
 		chat.sendMessage(JOIN_COMMAND_FORMAT);
 	}
@@ -82,6 +87,12 @@ public class Main implements SniperListener {
 				ui.showStatus(MainWindow.STATUS_LOST);
 				}
 			});		
+	}
+
+	@Override
+	public void sniperBidding() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
