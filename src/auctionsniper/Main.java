@@ -28,7 +28,7 @@ public class Main {
 	public static final String AUCTION_RESOURCE = "Auction";
 	public static final String ITEM_ID_AS_LOGIN = "auction-%s";
 	public static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
-	public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: Join;";
+	public static final String JOIN_COMMAND_FORMAT = "SQLVersion: 1.1; Command: Join;";
 	public static final String BID_COMMAND_FORMAT = "SQLVersion: 1.1; Command: Bid; Price: %d;";
 	
 	public Main() throws Exception {
@@ -50,8 +50,6 @@ public class Main {
 		Auction auction = new XMPPAuction(chat);
 		chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(auction, new SniperStateDisplayer())));
 		auction.join();
-		
-		chat.sendMessage(JOIN_COMMAND_FORMAT);
 	}
 	
 	public class SniperStateDisplayer implements SniperListener {

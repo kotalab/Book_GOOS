@@ -86,7 +86,6 @@ public class FakeAuctionServer {
 			assertThat("Message", message, CoreMatchers.is(CoreMatchers.notNullValue()));
 			assertThat(message.getBody(), messageMatcher);
 		}
-		
 	}
 
 	public String getItemId() {
