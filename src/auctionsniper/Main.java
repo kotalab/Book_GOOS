@@ -8,10 +8,13 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.junit.internal.ArrayComparisonFailure;
+import org.omg.CORBA.PUBLIC_MEMBER;
+
+import com.objogate.wl.gesture.StaticTracker;
 
 import auctionsniper.ui.MainWindow;
 
-public class Main implements SniperListener {
+public class Main {
 	@SuppressWarnings("unused")
 	private Chat notToBeGCD;
 
@@ -44,19 +47,36 @@ public class Main implements SniperListener {
 				null);
 		notToBeGCD = chat;
 
-		Auction auction = new Auction() {
-			public void bid(int amount) {
-				try {
-					chat.sendMessage(String.format(BID_COMMAND_FORMAT, amount));
-				} catch (XMPPException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(auction, this)));
+		Auction auction = new XMPPAuction(chat);
+		chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(auction, new SniperStateDisplayer())));
+		auction.join();
+		
 		chat.sendMessage(JOIN_COMMAND_FORMAT);
 	}
 	
+	public class SniperStateDisplayer implements SniperListener {
+
+		@Override
+		public void sniperLost() {
+			showStatus(MainWindow.STATUS_LOST);
+		}
+
+		private void showStatus(String status) {
+			SwingUtilities.invokeLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					ui.showStatus(status);
+				}
+			});			
+		}
+
+		@Override
+		public void sniperBidding() {
+			showStatus(MainWindow.STATUS_BIDDING);
+		}
+	}
+
 	private void disconnectWhenUICloses(XMPPConnection connection) {
 		ui.addWindowListener(new WindowAdapter() {
 			@Override
@@ -86,25 +106,4 @@ public class Main implements SniperListener {
 			}
 		});
 	}
-
-	@Override
-	public void sniperLost() {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				ui.showStatus(MainWindow.STATUS_LOST);
-				}
-			});		
-	}
-
-	@Override
-	public void sniperBidding() {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				ui.showStatus(MainWindow.STATUS_BIDDING);
-				}
-			});		
-	}
-
 }
