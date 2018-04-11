@@ -73,6 +73,11 @@ public class Main {
 		public void sniperBidding() {
 			showStatus(MainWindow.STATUS_BIDDING);
 		}
+
+		@Override
+		public void sniperWinning() {
+			showStatus(MainWindow.STATUS_WINNING);		
+		}
 	}
 
 	private void disconnectWhenUICloses(XMPPConnection connection) {

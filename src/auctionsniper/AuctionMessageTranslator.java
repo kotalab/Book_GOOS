@@ -67,7 +67,6 @@ public class AuctionMessageTranslator implements MessageListener {
 		}
 
 		private String get(String fieldName) {
-			System.out.println(fields.values());
 			return fields.get(fieldName);
 		}
 		
