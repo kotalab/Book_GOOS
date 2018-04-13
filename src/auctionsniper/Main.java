@@ -64,7 +64,7 @@ public class Main {
 				
 				@Override
 				public void run() {
-					ui.showStatus(status);
+					ui.showStatusText(status);
 				}
 			});			
 		}
