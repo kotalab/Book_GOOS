@@ -19,7 +19,7 @@ public class AuctionSniperDriver extends JFrameDriver {
 				);
 	}
 	
-	public void showsSniperStatus(String statusText) {
+	public void showsSniperStatus(String statusText, int lastPrice, int lastBid, String statusBidding) {
 		new JTableDriver(this).hasCell(JLabelTextMatcher.withLabelText(Matchers.equalTo(statusText)));
 	}
 }

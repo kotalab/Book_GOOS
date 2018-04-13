@@ -11,7 +11,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 
-import auctionsniper.SniperTableModel;
 import auctionsniper.Main.SniperStateDisplayer;
 
 public class MainWindow extends JFrame {
