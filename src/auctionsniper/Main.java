@@ -70,7 +70,7 @@ public class Main {
 				
 				@Override
 				public void run() {
-					ui.sniperStatusChanged(new SniperState("", 0, 0), status);
+					ui.showStatusText(status);
 				}
 			});			
 		}
