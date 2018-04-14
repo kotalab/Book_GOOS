@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 
 import auctionsniper.Main.SniperStateDisplayer;
+import auctionsniper.SniperState;
 
 public class MainWindow extends JFrame {
 	private final SniperTableModel snipers = new SniperTableModel();
@@ -60,5 +61,10 @@ public class MainWindow extends JFrame {
 		result.setName(SNIPER_STATUS_NAME);
 		result.setBorder(new LineBorder(Color.BLACK));
 		return result;
+	}
+
+	public void sniperStatusChanged(SniperState sniperState, String statusText) {
+		snipers.sniperStatusChanged(sniperState, statusText);
+		
 	}
 }

@@ -48,7 +48,13 @@ public class Main {
 		notToBeGCD = chat;
 
 		Auction auction = new XMPPAuction(chat);
-		chat.addMessageListener(new AuctionMessageTranslator(connection.getUser(), new AuctionSniper(auction, new SniperStateDisplayer())));
+		chat.addMessageListener(
+				new AuctionMessageTranslator(
+						connection.getUser(),
+						new AuctionSniper(auction, new SniperStateDisplayer(), itemId
+								)
+						)
+				);
 		auction.join();
 	}
 	
@@ -64,13 +70,20 @@ public class Main {
 				
 				@Override
 				public void run() {
-					ui.showStatusText(status);
+					ui.sniperStatusChanged(new SniperState("", 0, 0), status);
 				}
 			});			
 		}
 
 		@Override
-		public void sniperBidding() {
+		public void sniperBidding(final SniperState state) {
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+					ui.sniperStatusChanged(state, MainWindow.STATUS_BIDDING);
+				}
+			});
 			showStatus(MainWindow.STATUS_BIDDING);
 		}
 
