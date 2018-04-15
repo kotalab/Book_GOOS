@@ -1,13 +1,17 @@
 package auctionsniper.ui;
 
+import java.lang.Thread.State;
+
 import javax.swing.table.AbstractTableModel;
 
 import auctionsniper.SniperSnapshot;
+import auctionsniper.SniperState;
 
 public class SnipersTableModel extends AbstractTableModel {
-	private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0);
-	private String statusText = MainWindow.STATUS_JOINING;
-	private SniperSnapshot sniperState = STARTING_UP; 
+	private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINNING);
+	private String state = MainWindow.STATUS_JOINING;
+	private SniperSnapshot snapshot = STARTING_UP; 
+	private static String[] STATUS_TEXT = { MainWindow.STATUS_JOINING, MainWindow.STATUS_BIDDING };
 
 	@Override
 	public int getRowCount() {
@@ -24,13 +28,13 @@ public class SnipersTableModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		switch (Column.at(columnIndex)) {
 		case ITEM_IDENTIFIER:
-			return sniperState.itemId;
+			return snapshot.itemId;
 		case LAST_PRICE:
-			return sniperState.lastPrice;
+			return snapshot.lastPrice;
 		case LAST_BID:
-			return sniperState.lastBid;
+			return snapshot.lastBid;
 		case SNIPER_STATE:
-			return statusText;
+			return state;
 		default:
 			throw new IllegalArgumentException("No columnt at " + columnIndex);
 		}
@@ -41,9 +45,10 @@ public class SnipersTableModel extends AbstractTableModel {
 		
 	}
 
-	public void sniperStatusChanged(SniperSnapshot newSniperState, String newStatusText) {
-		sniperState = newSniperState;
-		statusText = newStatusText;
+	public void sniperStateChanged(SniperSnapshot newSnapshot) {
+		snapshot = newSnapshot;
+		state = STATUS_TEXT[newSnapshot.state.ordinal()];
+		
 		fireTableRowsUpdated(0, 0);		
 	}
 

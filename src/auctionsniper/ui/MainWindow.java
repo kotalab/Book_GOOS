@@ -63,8 +63,8 @@ public class MainWindow extends JFrame {
 		return result;
 	}
 
-	public void sniperStatusChanged(SniperSnapshot sniperState, String statusText) {
-		snipers.sniperStatusChanged(sniperState, statusText);
+	public void sniperStatusChanged(SniperSnapshot sniperState) {
+		snipers.sniperStateChanged(sniperState);
 		
 	}
 }
