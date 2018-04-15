@@ -1,5 +1,7 @@
 package auctionsniper;
 
+import org.jmock.lib.CamelCaseNamingScheme;
+
 public class AuctionSniper implements AuctionEventListener {
 	private final SniperListener sniperListener;
 	private final Auction auction;
@@ -16,23 +18,25 @@ public class AuctionSniper implements AuctionEventListener {
 		return snapshot.itemId;
 	}
 	public void auctionClosed() {
-		if (isWinning) {
-			sniperListener.sniperWon();
-		} else {
-			sniperListener.sniperLost();	
-		}
+		snapshot = snapshot.closed();
+		notifyChange();
+	}
+
+	private void notifyChange() {
+		sniperListener.sniperStateChanged(snapshot);
 	}
 
 	@Override
 	public void currentPrice(int price, int increment, PriceSource priceSource) {
-		isWinning = priceSource == PriceSource.FromSniper;
-		if (isWinning) {
+		switch (priceSource) {
+		case FromSniper:
 			snapshot = snapshot.winning(price);
-		} else {
+			break;
+		case FromOtherBidder:
 			int bid = price + increment;
 			auction.bid(bid);
 			snapshot = snapshot.biding(price, bid);
 		}
-		sniperListener.sniperStateChanged(snapshot);
+		notifyChange();
 	}
 }
