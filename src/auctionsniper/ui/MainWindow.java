@@ -15,7 +15,7 @@ import auctionsniper.Main.SniperStateDisplayer;
 import auctionsniper.SniperState;
 
 public class MainWindow extends JFrame {
-	private final SniperTableModel snipers = new SniperTableModel();
+	private final SnipersTableModel snipers = new SnipersTableModel();
 
 	public static final String MAIN_WINDOW_NAME = "Action Sniper Main";
 	public static final String SNIPER_STATUS_NAME = "sniper status";
