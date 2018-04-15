@@ -7,12 +7,6 @@ import javax.swing.SwingUtilities;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.junit.experimental.theories.Theories;
-import org.junit.internal.ArrayComparisonFailure;
-import org.omg.CORBA.PUBLIC_MEMBER;
-
-import com.objogate.wl.gesture.StaticTracker;
-
 import auctionsniper.ui.MainWindow;
 import auctionsniper.ui.SnipersTableModel;
 

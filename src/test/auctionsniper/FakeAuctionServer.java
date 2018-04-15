@@ -1,4 +1,4 @@
-package auctionsniper;
+package test.auctionsniper;
 import static org.junit.Assert.assertThat;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +9,9 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+
+import auctionsniper.Main;
+
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;

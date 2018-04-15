@@ -1,10 +1,7 @@
 package auctionsniper.ui;
 
-import java.lang.Thread.State;
-
 import javax.swing.table.AbstractTableModel;
 
-import auctionsniper.Main;
 import auctionsniper.SniperListener;
 import auctionsniper.SniperSnapshot;
 import auctionsniper.SniperState;

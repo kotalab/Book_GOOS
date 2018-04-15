@@ -1,11 +1,8 @@
 package auctionsniper;
 
-import org.jmock.lib.CamelCaseNamingScheme;
-
 public class AuctionSniper implements AuctionEventListener {
 	private final SniperListener sniperListener;
 	private final Auction auction;
-	private boolean isWinning = false;
 	private SniperSnapshot snapshot;
 
 	public AuctionSniper(Auction auction, SniperListener sniperListener, String itemId) {

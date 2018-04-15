@@ -2,9 +2,6 @@ package test.auctionsniper;
 import org.junit.After;
 import org.junit.jupiter.api.Test;
 
-import auctionsniper.ApplicationRunner;
-import auctionsniper.FakeAuctionServer;
-
 public class AuctionSniperEndToEndTest {
 	private final FakeAuctionServer auction = new FakeAuctionServer("item-54321");
 	private final ApplicationRunner application = new ApplicationRunner();

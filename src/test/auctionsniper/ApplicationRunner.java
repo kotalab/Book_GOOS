@@ -1,4 +1,6 @@
-package auctionsniper;
+package test.auctionsniper;
+import auctionsniper.Main;
+import auctionsniper.SniperState;
 import auctionsniper.ui.MainWindow;
 import auctionsniper.ui.SnipersTableModel;
 
@@ -25,6 +27,8 @@ public class ApplicationRunner {
 		thread.start();
 		
 		driver = new AuctionSniperDriver(1000);
+		driver.hasTitle(MainWindow.APPLICATION_TITLE);
+		driver.hasColumnTitles();
 		driver.showsSniperStatus("", 0, 0, SnipersTableModel.textFor(SniperState.JOINNING));
 	}
 	
