@@ -7,12 +7,14 @@ import javax.swing.SwingUtilities;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.junit.experimental.theories.Theories;
 import org.junit.internal.ArrayComparisonFailure;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
 import com.objogate.wl.gesture.StaticTracker;
 
 import auctionsniper.ui.MainWindow;
+import auctionsniper.ui.SnipersTableModel;
 
 public class Main {
 	@SuppressWarnings("unused")
@@ -23,6 +25,7 @@ public class Main {
 	private static final int ARG_PASSWORD = 2;
 	private static final int ARG_ITEM_ID = 3;
 	private MainWindow ui;
+	private final SnipersTableModel snipers = new SnipersTableModel();
 	
 	public static final String SNIPER_STATUS_NAME = "sniper status";
 	public static final String AUCTION_RESOURCE = "Auction";
@@ -30,9 +33,15 @@ public class Main {
 	public static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
 	public static final String JOIN_COMMAND_FORMAT = "SQLVersion: 1.1; Command: Join;";
 	public static final String BID_COMMAND_FORMAT = "SQLVersion: 1.1; Command: Bid; Price: %d;";
+
 	
 	public Main() throws Exception {
-		startUserInterface();
+		SwingUtilities.invokeAndWait(new Runnable() {
+			@Override
+			public void run() {
+				ui = new MainWindow(snipers);
+			}
+		});
 	}
 	
 	public static void main(String... args) throws Exception {
@@ -51,27 +60,15 @@ public class Main {
 		chat.addMessageListener(
 				new AuctionMessageTranslator(
 						connection.getUser(),
-						new AuctionSniper(auction, new SniperStateDisplayer(), itemId
-								)
+						new AuctionSniper(
+								auction,
+								new SwingThreadSniperListener(snipers),
+								itemId)
 						)
 				);
 		auction.join();
 	}
 	
-	public class SniperStateDisplayer implements SniperListener {
-
-		@Override
-		public void sniperStateChanged(final SniperSnapshot state) {
-			SwingUtilities.invokeLater(new Runnable() {
-
-				@Override
-				public void run() {
-					ui.sniperStatusChanged(state);
-				}
-			});
-		}
-	}
-
 	private void disconnectWhenUICloses(XMPPConnection connection) {
 		ui.addWindowListener(new WindowAdapter() {
 			@Override
@@ -91,14 +88,5 @@ public class Main {
 	
 	private static String auctionId(String itemId, XMPPConnection connection) {
 		return String.format(AUCTION_ID_FORMAT, itemId, connection.getServiceName());
-	}
-	
-	private void startUserInterface() throws Exception {
-		SwingUtilities.invokeAndWait(new Runnable() {
-			@Override
-			public void run() {
-				ui = new MainWindow();
-			}
-		});
 	}
 }

@@ -1,19 +1,10 @@
 package auctionsniper.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
-import java.awt.GraphicsConfiguration;
-
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.border.LineBorder;
-
-import auctionsniper.Main.SniperStateDisplayer;
-import auctionsniper.SniperSnapshot;
-import auctionsniper.SniperState;
 
 public class MainWindow extends JFrame {
 	private final SnipersTableModel snipers = new SnipersTableModel();
@@ -23,7 +14,7 @@ public class MainWindow extends JFrame {
 	private static final String APPLICATION_TITLE = "Auction Sniper";
 	private static final String SNIPERS_TABLE_NAME = null;
 	
-	public MainWindow() {
+	public MainWindow(SnipersTableModel snipers) {
 		super(APPLICATION_TITLE);
 		setName(MAIN_WINDOW_NAME);
 		fillContentPanel(makeSniperTable());
@@ -43,17 +34,5 @@ public class MainWindow extends JFrame {
 		final JTable snipersTable = new JTable(snipers);
 		snipersTable.setName(SNIPERS_TABLE_NAME);
 		return snipersTable;
-	}
-
-	private JLabel createLabel(String initialText) {
-		JLabel result = new JLabel(initialText);
-		result.setName(SNIPER_STATUS_NAME);
-		result.setBorder(new LineBorder(Color.BLACK));
-		return result;
-	}
-
-	public void sniperStatusChanged(SniperSnapshot sniperState) {
-		snipers.sniperStateChanged(sniperState);
-		
 	}
 }

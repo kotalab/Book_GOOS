@@ -5,10 +5,11 @@ import java.lang.Thread.State;
 import javax.swing.table.AbstractTableModel;
 
 import auctionsniper.Main;
+import auctionsniper.SniperListener;
 import auctionsniper.SniperSnapshot;
 import auctionsniper.SniperState;
 
-public class SnipersTableModel extends AbstractTableModel {
+public class SnipersTableModel extends AbstractTableModel implements SniperListener {
 	private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINNING);
 	private SniperSnapshot snapshot = STARTING_UP; 
 	private static String[] STATUS_TEXT = {
