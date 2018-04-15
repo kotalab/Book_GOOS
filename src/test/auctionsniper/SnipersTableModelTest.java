@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import auctionsniper.Main;
-import auctionsniper.SniperState;
+import auctionsniper.SniperSnapshot;
 import auctionsniper.ui.Column;
 import auctionsniper.ui.MainWindow;
 import auctionsniper.ui.SnipersTableModel;
@@ -47,7 +47,7 @@ public class SnipersTableModelTest {
 		}});
 		
 		model.sniperStatusChanged(
-				new SniperState("item id", 555, 666),
+				new SniperSnapshot("item id", 555, 666),
 				MainWindow.STATUS_BIDDING);
 		
 		assertColumnEquals(Column.ITEM_IDENTIFIER, "item id");

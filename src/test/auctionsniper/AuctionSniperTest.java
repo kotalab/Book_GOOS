@@ -9,7 +9,7 @@ import auctionsniper.Auction;
 import auctionsniper.AuctionEventListener.PriceSource;
 import auctionsniper.AuctionSniper;
 import auctionsniper.SniperListener;
-import auctionsniper.SniperState;
+import auctionsniper.SniperSnapshot;
 
 public class AuctionSniperTest {
 	final String ITEM_ID = "item-54321";
@@ -36,7 +36,7 @@ public class AuctionSniperTest {
 		final int bid = price + increment;
 		context.checking(new Expectations() {{
 			one(auction).bid(bid);
-			atLeast(1).of(sniperListener).sniperBidding(new SniperState(sniper.getItemId(), price, bid));
+			atLeast(1).of(sniperListener).sniperBidding(new SniperSnapshot(sniper.getItemId(), price, bid));
 		}});
 		
 		sniper.currentPrice(price, increment, PriceSource.FromOtherBidder);
@@ -62,7 +62,7 @@ public class AuctionSniperTest {
 	public void reportsLostIfAuctionClosesWhenBidding() {
 		context.checking(new Expectations() {{
 			ignoring(auction);
-			allowing(sniperListener).sniperBidding(with(any(SniperState.class)));
+			allowing(sniperListener).sniperBidding(with(any(SniperSnapshot.class)));
 			then(sniperState.is("bidding"));
 			
 			atLeast(1).of(sniperListener).sniperLost();

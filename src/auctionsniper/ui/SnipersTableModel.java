@@ -2,12 +2,12 @@ package auctionsniper.ui;
 
 import javax.swing.table.AbstractTableModel;
 
-import auctionsniper.SniperState;
+import auctionsniper.SniperSnapshot;
 
 public class SnipersTableModel extends AbstractTableModel {
-	private final static SniperState STARTING_UP = new SniperState("", 0, 0);
+	private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0);
 	private String statusText = MainWindow.STATUS_JOINING;
-	private SniperState sniperState = STARTING_UP; 
+	private SniperSnapshot sniperState = STARTING_UP; 
 
 	@Override
 	public int getRowCount() {
@@ -41,7 +41,7 @@ public class SnipersTableModel extends AbstractTableModel {
 		
 	}
 
-	public void sniperStatusChanged(SniperState newSniperState, String newStatusText) {
+	public void sniperStatusChanged(SniperSnapshot newSniperState, String newStatusText) {
 		sniperState = newSniperState;
 		statusText = newStatusText;
 		fireTableRowsUpdated(0, 0);		
