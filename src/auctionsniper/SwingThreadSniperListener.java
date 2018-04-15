@@ -11,6 +11,7 @@ public class SwingThreadSniperListener implements SniperListener {
 		this.sniperListener = snipers;
 	}
 
+	@Override
 	public void sniperStateChanged(final SniperSnapshot state) {
 		SwingUtilities.invokeLater(new Runnable() {
 

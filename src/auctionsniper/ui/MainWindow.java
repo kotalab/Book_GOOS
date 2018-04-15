@@ -7,7 +7,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 public class MainWindow extends JFrame {
-	private final SnipersTableModel snipers = new SnipersTableModel();
+	private final SnipersTableModel snipers;
 
 	public static final String MAIN_WINDOW_NAME = "Action Sniper Main";
 	public static final String SNIPER_STATUS_NAME = "sniper status";
@@ -16,6 +16,7 @@ public class MainWindow extends JFrame {
 	
 	public MainWindow(SnipersTableModel snipers) {
 		super(APPLICATION_TITLE);
+		this.snipers = snipers;
 		setName(MAIN_WINDOW_NAME);
 		fillContentPanel(makeSniperTable());
 		pack();
