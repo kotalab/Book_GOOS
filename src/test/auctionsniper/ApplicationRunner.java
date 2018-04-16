@@ -32,8 +32,8 @@ public class ApplicationRunner {
 		driver.showsSniperStatus("", 0, 0, SnipersTableModel.textFor(SniperState.JOINNING));
 	}
 	
-	public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
-		driver.showsSniperStatus(itemId, lastPrice, lastBid, SnipersTableModel.textFor(SniperState.BIDDING));
+	public void hasShownSniperIsBidding(FakeAuctionServer auction, int lastPrice, int lastBid) {
+		driver.showsSniperStatus(auction.getItemId(), lastPrice, lastBid, SnipersTableModel.textFor(SniperState.BIDDING));
 	}
 	
 	public void showsSniperHasLostAuction() {
