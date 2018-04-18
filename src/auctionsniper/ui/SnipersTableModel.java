@@ -35,7 +35,6 @@ public class SnipersTableModel extends AbstractTableModel implements SniperListe
 	}
 
 	public void sniperStateChanged(SniperSnapshot newSnapshot) {
-		System.out.println(newSnapshot.state.name());
 		snapshot = newSnapshot;
 		fireTableRowsUpdated(0, 0);		
 	}
