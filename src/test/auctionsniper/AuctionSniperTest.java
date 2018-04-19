@@ -6,7 +6,6 @@ import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.States;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import auctionsniper.Auction;
