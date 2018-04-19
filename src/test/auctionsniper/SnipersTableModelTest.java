@@ -68,6 +68,39 @@ public class SnipersTableModelTest {
 			assertEquals(column.name, model.getColumnName(column.ordinal()));
 		}
 	}
+	
+	@Test
+	public void notifiersListenersWhenAddingASniper() {
+		SniperSnapshot joining = SniperSnapshot.joining("item123");
+		context.checking(new Expectations() {{
+			one(listener).tableChanged(with(anInsertionAtRow(0)));
+		}});
+		
+		assertEquals(0, model.getRowCount());
+		
+		model.addSniper(joining);
+		
+		assertEquals(1, model.getRowCount());
+		assertRowMatchesSnapshot(0, joining);
+	}
+
+	private void assertRowMatchesSnapshot(int rowIndex, SniperSnapshot snapshot) {
+		assertEquals(snapshot.itemId, model.getValueAt(rowIndex, Column.ITEM_IDENTIFIER.ordinal()));
+		assertEquals(snapshot.lastPrice, model.getValueAt(rowIndex, Column.LAST_PRICE.ordinal()));
+		assertEquals(snapshot.lastBid, model.getValueAt(rowIndex, Column.LAST_BID.ordinal()));
+		assertEquals(SnipersTableModel.textFor(snapshot.state), model.getValueAt(rowIndex, Column.SNIPER_STATE.ordinal()));
+	}
+
+	protected Matcher<TableModelEvent> anInsertionAtRow(int row) {
+		return samePropertyValuesAs(
+				new TableModelEvent(
+						model,
+						row,
+						row,
+						TableModelEvent.ALL_COLUMNS,
+						TableModelEvent.INSERT
+						));
+	}
 
 	private void assertColumnEquals(Column column, Object expected) {
 		final int rowIndex = 0;
