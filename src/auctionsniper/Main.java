@@ -11,6 +11,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import auctionsniper.ui.MainWindow;
 import auctionsniper.ui.SnipersTableModel;
+import auctionsniper.ui.UserRequestListener;
 
 public class Main {	@SuppressWarnings("unused")
 	private List<Chat> notToBeGCd = new ArrayList<Chat>();
@@ -42,41 +43,34 @@ public class Main {	@SuppressWarnings("unused")
 		Main main = new Main();
 		XMPPConnection connection = connection(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]); 
 		main.disconnectWhenUICloses(connection);
-		
-		for (int i = 3; i < args.length; i++) {
-			main.joinAuction(connection, args[i]);
-		}		
+		main.addUserRequestListenerFor(connection);
 	}
 	
-	private void joinAuction(XMPPConnection connection, String itemId) throws Exception {
-		safelyAddItemToModel(itemId);
-		
-		final Chat chat = connection.getChatManager().createChat(
-				auctionId(itemId, connection),
-				null);
-		notToBeGCd.add(chat);
-
-		Auction auction = new XMPPAuction(chat);
-		chat.addMessageListener(
-				new AuctionMessageTranslator(
-						connection.getUser(),
-						new AuctionSniper(
-								auction,
-								new SwingThreadSniperListener(snipers),
-								itemId)
-						)
-				);
-		auction.join();
-	}
-	
-	private void safelyAddItemToModel(String itemId) throws Exception {
-		SwingUtilities.invokeAndWait(new Runnable() {
-			
+	private void addUserRequestListenerFor(final XMPPConnection connection) {
+		ui.addUserRequestListner(new UserRequestListener() {
 			@Override
-			public void run() {
+			public void joinAuction(String itemId) {
 				snipers.addSniper(SniperSnapshot.joining(itemId));
+				
+				final Chat chat = connection.getChatManager().createChat(
+						auctionId(itemId, connection),
+						null);
+				notToBeGCd.add(chat);
+
+				Auction auction = new XMPPAuction(chat);
+				chat.addMessageListener(
+						new AuctionMessageTranslator(
+								connection.getUser(),
+								new AuctionSniper(
+										auction,
+										new SwingThreadSniperListener(snipers),
+										itemId)
+								)
+						);
+				auction.join();
 			}
 		});
+		
 	}
 
 	private void disconnectWhenUICloses(XMPPConnection connection) {

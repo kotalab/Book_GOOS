@@ -3,6 +3,8 @@ package auctionsniper.ui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,11 +13,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import auctionsniper.util.Announcer;
+
 public class MainWindow extends JFrame {
 	public static final String MAIN_WINDOW_NAME = "Action Sniper Main";
 	public static final String SNIPER_STATUS_NAME = "sniper status";
 	public static final String APPLICATION_TITLE = "Auction Sniper";
 	private static final String SNIPERS_TABLE_NAME = null;
+	private final Announcer<UserRequestListener> userRequests = Announcer.to(UserRequestListener.class);
 
 	public static final String JOIN_BUTTON_NAME = "Join";
 
@@ -24,13 +29,13 @@ public class MainWindow extends JFrame {
 	public MainWindow(SnipersTableModel snipers) {
 		super(APPLICATION_TITLE);
 		setName(MAIN_WINDOW_NAME);
-		fillContentPanel(makeSniperTable(snipers), makeControls());
+		fillContentPanel(makeSniperTable(snipers), makeControls(snipers));
 		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
 	
-	private JPanel makeControls() {
+	private JPanel makeControls(final SnipersTableModel snipers) {
 		JPanel controls = new JPanel(new FlowLayout());
 		final JTextField itemIdFieald = new JTextField();
 		itemIdFieald.setColumns(25);
@@ -39,6 +44,12 @@ public class MainWindow extends JFrame {
 		
 		JButton joinAuctionButton = new JButton("Join Auction");
 		joinAuctionButton.setName(JOIN_BUTTON_NAME);
+		joinAuctionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				userRequests.announce().joinAuction(itemIdFieald.getText());				
+			}
+		});
 		controls.add(joinAuctionButton);
 		
 		return controls;
@@ -55,5 +66,9 @@ public class MainWindow extends JFrame {
 		final JTable snipersTable = new JTable(snipers);
 		snipersTable.setName(SNIPERS_TABLE_NAME);
 		return snipersTable;
+	}
+
+	public void addUserRequestListner(UserRequestListener userRequestListener) {
+		userRequests.addListener(userRequestListener);
 	}
 }
