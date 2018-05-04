@@ -6,16 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
-import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import auctionsniper.ui.MainWindow;
 import auctionsniper.ui.SnipersTableModel;
 import auctionsniper.ui.UserRequestListener;
-import auctionsniper.util.Announcer;
 
 public class Main {
-	private List<Chat> notToBeGCd = new ArrayList<Chat>();
+	private List<Auction> notToBeGCd = new ArrayList<Auction>();
 
 	private static final int ARG_HOSTNAME = 0;
 	private static final int ARG_USERNAME = 1;
@@ -24,9 +22,6 @@ public class Main {
 	private final SnipersTableModel snipers = new SnipersTableModel();
 	
 	public static final String SNIPER_STATUS_NAME = "sniper status";
-	public static final String AUCTION_RESOURCE = "Auction";
-	public static final String ITEM_ID_AS_LOGIN = "auction-%s";
-	public static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
 	public static final String JOIN_COMMAND_FORMAT = "SQLVersion: 1.1; Command: Join;";
 	public static final String BID_COMMAND_FORMAT = "SQLVersion: 1.1; Command: Bid; Price: %d;";
 
@@ -53,20 +48,10 @@ public class Main {
 			public void joinAuction(String itemId) {
 				snipers.addSniper(SniperSnapshot.joining(itemId));
 				
-				final Chat chat = connection.getChatManager().createChat(
-						auctionId(itemId, connection),
-						null);
-				Announcer<AuctionEventListener> auctionEventListeners = Announcer.to(AuctionEventListener.class);
-				chat.addMessageListener(
-						new AuctionMessageTranslator(
-								connection.getUser(),
-								auctionEventListeners.announce()
-								)
-						);
-				notToBeGCd.add(chat);
+				Auction auction = new XMPPAuction(connection, itemId);
+				notToBeGCd.add(auction);
 
-				Auction auction = new XMPPAuction(chat);
-				auctionEventListeners.addListener(
+				auction.addAuctionEventListener(
 						new AuctionSniper(
 								auction,
 								new SwingThreadSniperListener(snipers),
@@ -90,12 +75,9 @@ public class Main {
 	private static XMPPConnection connection(String hostname, String username, String password) throws XMPPException {
 		XMPPConnection connection = new XMPPConnection(hostname);
 		connection.connect();
-		connection.login(username, password, AUCTION_RESOURCE);
+		connection.login(username, password, XMPPAuction.AUCTION_RESOURCE);
 		
 		return connection;
 	}
 	
-	private static String auctionId(String itemId, XMPPConnection connection) {
-		return String.format(AUCTION_ID_FORMAT, itemId, connection.getServiceName());
-	}
 }
